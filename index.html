@@ -10,6 +10,16 @@
 	#contentwrap {
 		display:none;
 	}
+	.error {
+		color:red;
+	}
+	.whisper {
+		color:blue;
+	}
+	.msg {
+		color:green;
+	}
+
 	</style>
 </head>
 <body>
@@ -46,7 +56,7 @@
 		$messageForm.submit(function(e){
 			e.preventDefault();
 			socket.emit('sendmessage', $messageBox.val(), function(data) {
-				
+				$chat.append("<span class='error'>" + data + "</span>")
 			});
 			$messageBox.val('');
 		});
@@ -60,14 +70,11 @@
 				}
 				else
 				{
-					$nickError.html('name already exist');			}
+					$nickError.html('name already exist');		
+				}
 
 			});
 			$nickBox.val('');
-		});
-
-		socket.on('newmessage', function(data){
-			$chat.append("<b>" + data.nick + ":" + "</b>" + data.msg + "<br/>")
 		});
 
 		socket.on('usernames', function(data) {
@@ -76,7 +83,15 @@
 				html += data[i] + '</br>'
 			}
 			$users.html(html);
-		})
+		});
+
+		socket.on('newmessage', function(data){
+			$chat.append("<b>" + data.nick + ":" + "</b><span class='msg'>" + data.msg + "</span><br/>")
+		});
+
+		socket.on('whisper', function(data) {
+			$chat.append("<b>" + data.nick + ":" + "</b><span class='whisper'>" + data.msg + "</span><br/>")
+		});
 	})
 	</script>
 </body>	

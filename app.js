@@ -13,12 +13,9 @@ app.get('/', function(req, res) {
 io.sockets.on('connection', function(socket) {
 	socket.on('sendmessage', function(data, callback) {
 		var msg = data.trim();
-		console.log("msg",msg);
-		console.log("dhhhskdhfkhs", msg.substr(0,3));
-		if(msg.substr(0,3) === '/w')
+		if(msg.substr(0,3) === '/w ')
 		{
 			msg = msg.substr(3);
-			console.log("msg2333",msg);
 			var ind = msg.indexOf(' ');
 			if(ind !== -1)
 			{
@@ -27,7 +24,6 @@ io.sockets.on('connection', function(socket) {
 				if(name in users)
 				{
 					users[name].emit('whisper', {msg: msg, nick: socket.nickname});
-					console.log("whisper");
 				}
 				else
 				{
@@ -41,9 +37,8 @@ io.sockets.on('connection', function(socket) {
 		}
 		else
 		{
-
+			io.sockets.emit('newmessage', {msg: msg, nick: socket.nickname});
 		}
-		io.sockets.emit('newmessage', {msg: msg, nick: socket.nickname});
 	});
 	
 	socket.on('new user', function(data, callback) {
